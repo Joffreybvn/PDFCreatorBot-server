@@ -1,0 +1,19 @@
+{
+  "name": "PDF-Creator-Bot-server",
+  "version": "1.0.0",
+  "description": "A bot for simplify life of students. Server part.",
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "author": "Joffrey",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "form-data": "^2.2.0",
+    "pdfkit": "^0.8.3"
+  }
+}
