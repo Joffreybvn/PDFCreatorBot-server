@@ -12,6 +12,7 @@ const path = require('path');
 // Internal imports
 const font = require('./lib/enumFonts');
 const size = require('./lib/enumSizes');
+const url = require('./lib/enumURL');
 const rand = require('./modules/randomChar');
 
 // Internal exports
@@ -62,7 +63,7 @@ app.post('/create', function (req, res) {
             let form = new FormData();
             form.append('userId', userId);
             form.append('documentPDF', fs.readFileSync(docPath));
-            form.submit('http://127.0.0.1:3000/upload', function(err, response) {
+            form.submit(url.SERV_STATIC.remote + 'upload', function(err, response) {
 
                 // Remove the document from this server
                 fs.unlinkSync(docPath);
@@ -76,7 +77,7 @@ app.post('/create', function (req, res) {
                 response.on('data', function(data) {
                     let fileId = data.toString('utf8');
                     return res.status(200).send(
-                        'http://127.0.0.1:3000/d?u=' + userId + '&f=doc_' + fileId + '.pdf'
+                        url.SERV_STATIC.remote + 'd?u=' + userId + '&f=doc_' + fileId + '.pdf'
                     )
                 });
             });
@@ -89,7 +90,7 @@ app.post('/create', function (req, res) {
 // Server starting
 //=========================================================
 
-const PORT = 8000;
+const PORT = process.env.port || process.env.PORT || 8000;
 app.listen(PORT, function () {
     console.log('[server] started on port ' + PORT);
 });
