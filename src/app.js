@@ -9,15 +9,18 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-// Internal imports
+// Internal library imports
 const font = require('./lib/enumFonts');
 const size = require('./lib/enumSizes');
 const url = require('./lib/enumURL');
-const rand = require('./modules/randomChar');
 
-// Internal exports
+// Internal library exports
 exports.font = font;
 exports.size = size;
+
+// Internal module imports
+const document = require('./modules/writeDocument');
+const rand = require('./modules/randomChar');
 
 // Initialize the app to support POST of JSON
 const app = express();
@@ -30,6 +33,7 @@ app.use(bodyParser.json());
 app.post('/create', function (req, res) {
 
     const userId = '28469';
+    const docPath = path.join(__dirname, '../files/output_' + rand.char() + '.pdf');
 
     // Check if the request contain a body with arguments
     if (Object.keys(req.body).length === 0) {
@@ -46,44 +50,43 @@ app.post('/create', function (req, res) {
             Author: rawData.author,
         }
     });
-    exports.doc = doc;
+
+    // Generate a storage stream
+    let writeStream = fs.createWriteStream(docPath);
+    doc.pipe(writeStream);
 
     // Create the document
-    let document = require('./modules/writeDocument');
-    document.create(rawData);
-
-    // Generate a storage path for the document
-    const docPath = path.join(__dirname, '../files/output_' + rand.char() + '.pdf');
+    doc = document.createDocument(doc, rawData);
+    doc.end();
 
     // Save temporally the document
-    doc.pipe(fs.createWriteStream(docPath))
-        .on('finish', function () {
+    writeStream.on('finish', function () {
 
             // Send the document to the storage server
             let form = new FormData();
             form.append('userId', userId);
             form.append('documentPDF', fs.readFileSync(docPath));
-            form.submit(url.SERV_STATIC.remote + 'upload', function(err, response) {
+            form.submit(url.SERV_STATIC.local + 'upload', function(err, response) {
 
                 // Remove the document from this server
                 fs.unlinkSync(docPath);
 
                 // Send error response to bot if the upload fail
                 if (err) {
-                    return res.status(400).send('Static server upload failed');
+                    res.status(400).send('Static server upload failed');
+                    res.end()
                 }
 
                 // Send the link of the document to the bot
                 response.on('data', function(data) {
                     let fileId = data.toString('utf8');
-                    return res.status(200).send(
-                        url.SERV_STATIC.remote + 'd?u=' + userId + '&f=doc_' + fileId + '.pdf'
-                    )
+                    res.status(200).send(
+                        url.SERV_STATIC.local + 'd?u=' + userId + '&f=doc_' + fileId + '.pdf'
+                    );
+                    res.end()
                 });
             });
         });
-
-    doc.end();
 });
 
 

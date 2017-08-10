@@ -3,20 +3,22 @@
 // Packages imports
 const styles = require('./styles');
 
-exports.create = function (title, subtitle, text) {
+exports.writeParagraph = function (doc, title, subtitle, text) {
 
     // Write the title if it exists
     if (title !== "") {
-        styles.titleH1(title)
+        doc = styles.titleH1(doc, title)
     }
 
     // Write the subtitle if it exists
     if (subtitle !== "") {
-        styles.titleH2(subtitle)
+        doc = styles.titleH2(doc, subtitle)
     }
 
     // Write the text if it exists
     if (text !== "") {
-        styles.normal(text)
+        doc = styles.normal(doc, text)
     }
+
+    return doc
 };

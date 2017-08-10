@@ -4,12 +4,14 @@
 const cover = require('./writeCover');
 const paragraph = require('./writeParagraph');
 
-exports.create = function (content) {
+exports.createDocument = function (doc, content) {
 
     // Create the cover page
-    cover.create(content.title, content.author);
+    doc = cover.writeCover(doc, content.title, content.author);
 
     for (let i = 0; i < content.paragraphs.length; i ++) {
-        paragraph.create(content.paragraphs[i].title, content.paragraphs[i].subtitle, content.paragraphs[i].text)
+        doc = paragraph.writeParagraph(doc, content.paragraphs[i].title, content.paragraphs[i].subtitle, content.paragraphs[i].text)
     }
+
+    return doc
 };
