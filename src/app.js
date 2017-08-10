@@ -66,7 +66,7 @@ app.post('/create', function (req, res) {
             let form = new FormData();
             form.append('userId', userId);
             form.append('documentPDF', fs.readFileSync(docPath));
-            form.submit(url.SERV_STATIC.local + 'upload', function(err, response) {
+            form.submit(url.SERV_STATIC.remote + 'upload', function(err, response) {
 
                 // Remove the document from this server
                 fs.unlinkSync(docPath);
@@ -81,7 +81,7 @@ app.post('/create', function (req, res) {
                 response.on('data', function(data) {
                     let fileId = data.toString('utf8');
                     res.status(200).send(
-                        url.SERV_STATIC.local + 'd?u=' + userId + '&f=doc_' + fileId + '.pdf'
+                        url.SERV_STATIC.remote + 'd?u=' + userId + '&f=doc_' + fileId + '.pdf'
                     );
                     res.end()
                 });
