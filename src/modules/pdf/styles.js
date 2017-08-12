@@ -1,7 +1,7 @@
 "use strict";
 
 // Packages imports
-const app = require('../app');
+const app = require('../../app');
 
 const font = app.font;
 const size = app.size;

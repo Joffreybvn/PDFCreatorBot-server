@@ -2,9 +2,6 @@
 
 // Packages imports
 const styles = require('./styles');
-const app = require('../app');
-
-//const doc = app.doc;
 
 /**
  * Create a cover page with the title and the author.
