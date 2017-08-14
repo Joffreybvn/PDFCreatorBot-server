@@ -2,6 +2,7 @@
 
 // Packages imports
 const styles = require('./styles');
+const locale = require('../../lib/locale');
 
 /**
  * Create a cover page with the title and the author.
@@ -10,7 +11,7 @@ const styles = require('./styles');
  * @param {String} title - The title of the document
  * @param {String} author - The author of the document
  */
-exports.writeCover = function(doc, title, author) {
+exports.writeCover = function(doc, title, author, lang) {
 
     // If there's an author to show, math the margin to shift the title.
     let marginTop = 0;
@@ -22,7 +23,7 @@ exports.writeCover = function(doc, title, author) {
     let titledata = styles.titleCover(doc, title, marginTop);
     doc = titledata[0];
     let width = titledata[1];
-    doc = styles.textAuthor(doc, "by " + author, width);
+    doc = styles.textAuthor(doc, locale[lang].by + " " + author, width);
 
     doc.addPage();
 

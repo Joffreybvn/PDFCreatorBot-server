@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 
 app.post('/create', function (req, res) {
 
-    const userId = '28469';
+    //const userId = '28469';
     const randName = rand.char();
 
     // Incoming data checking
@@ -115,7 +115,8 @@ app.post('/create', function (req, res) {
 
             // Send the document to the storage server
             let form = new FormData();
-            form.append('userId', userId);
+            form.append('source', rawData.meta.source);
+            form.append('userId', rawData.meta.userId);
             form.append('documentPDF', fs.readFileSync(pdfPath));
             form.append('documentDOCX', fs.readFileSync(docxPath));
             form.submit(url.SERV_STATIC.remote + 'upload', function(err, response) {
